@@ -2,6 +2,8 @@
 
 A portable OpenCode configuration repo built around committed project docs, reusable slash commands, and a small global rules file.
 
+This setup is opinionated toward professional, maintainable software delivery: explicit plans for larger changes, test-first implementation, reviewable documentation, and reproducible global configuration.
+
 ## What It Includes
 
 ```text
@@ -13,6 +15,7 @@ commands/
   design-ingest.md
   init-docs.md
   plan.md
+  review.md
   tasks.md
   tdd.md
 templates/
@@ -31,6 +34,12 @@ git clone <repo-url> ~/open-code-setup
 cd ~/open-code-setup
 chmod +x install.sh
 ./install.sh
+
+# Or overwrite all managed files in one pass
+./install.sh --sync
+
+# Or verify the installed files against the repo
+./install.sh --verify
 ```
 
 Manual install:
@@ -75,6 +84,7 @@ Recommended session flow:
 ## Commands
 
 - `/plan`: create a plan before larger implementation work
+- `/review`: review code for bugs, regressions, and test gaps
 - `/tasks`: view or update `docs/TASKS.md`
 - `/adr`: write architecture decision records
 - `/tdd`: enforce a test-first workflow
@@ -102,6 +112,7 @@ Relevant docs:
 - Edit `AGENTS.md` to change your default working rules
 - Edit `commands/*.md` to change workflows or add new commands
 - Reuse and adapt `templates/design_system.md` for new projects
+- Adjust `opencode.json` to tune global models and permissions for your risk tolerance
 
 ## License
 

@@ -1,23 +1,55 @@
 #!/bin/bash
-# install.sh — Copy global OpenCode config, AGENTS.md, and commands
+# install.sh — Copy global OpenCode config, AGENTS.md, commands, and templates
 # Run from the repo root: ./install.sh
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 OPENCODE_DIR="$HOME/.config/opencode"
+MODE="prompt"
 
-# Prompt before overwriting an existing file. Skips if user declines.
-safe_copy() {
+case "${1:-}" in
+  --sync)
+    MODE="sync"
+    ;;
+  --verify)
+    MODE="verify"
+    ;;
+  "")
+    ;;
+  *)
+    echo "Usage: ./install.sh [--sync|--verify]"
+    exit 1
+    ;;
+esac
+
+# Copy or verify a managed file.
+sync_file() {
   local src="$1"
   local dest="$2"
   local label="$3"
 
-  if [[ -f "$dest" ]]; then
-    read -r -p "⚠ $label already exists. Overwrite? [y/N] " answer
-    if [[ ! "$answer" =~ ^[Yy]$ ]]; then
-      echo "  Skipped $label"
+  if [[ "$MODE" == "verify" ]]; then
+    if [[ ! -f "$dest" ]]; then
+      echo "MISSING  $label"
       return
+    fi
+
+    if cmp -s "$src" "$dest"; then
+      echo "OK       $label"
+    else
+      echo "DRIFT    $label"
+    fi
+    return
+  fi
+
+  if [[ -f "$dest" ]]; then
+    if [[ "$MODE" == "prompt" ]]; then
+      read -r -p "⚠ $label already exists. Overwrite? [y/N] " answer
+      if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+        echo "  Skipped $label"
+        return
+      fi
     fi
   fi
 
@@ -29,25 +61,28 @@ safe_copy() {
 mkdir -p "$OPENCODE_DIR/commands" "$OPENCODE_DIR/templates"
 
 # Copy global opencode.json
-safe_copy "$SCRIPT_DIR/opencode.json" "$OPENCODE_DIR/opencode.json" "~/.config/opencode/opencode.json"
+sync_file "$SCRIPT_DIR/opencode.json" "$OPENCODE_DIR/opencode.json" "~/.config/opencode/opencode.json"
 
 # Copy global AGENTS.md
-safe_copy "$SCRIPT_DIR/AGENTS.md" "$OPENCODE_DIR/AGENTS.md" "~/.config/opencode/AGENTS.md"
+sync_file "$SCRIPT_DIR/AGENTS.md" "$OPENCODE_DIR/AGENTS.md" "~/.config/opencode/AGENTS.md"
 
 # Copy each command
 command_count=0
 shopt -s nullglob
 for command_file in "$SCRIPT_DIR"/commands/*.md; do
   command_name=$(basename "$command_file")
-  safe_copy "$command_file" "$OPENCODE_DIR/commands/$command_name" "command: ${command_name%.md}"
+  sync_file "$command_file" "$OPENCODE_DIR/commands/$command_name" "command: ${command_name%.md}"
   command_count=$((command_count + 1))
 done
 shopt -u nullglob
 
 # Copy templates
-safe_copy "$SCRIPT_DIR/templates/design_system.md" "$OPENCODE_DIR/templates/design_system.md" "~/.config/opencode/templates/design_system.md"
+sync_file "$SCRIPT_DIR/templates/design_system.md" "$OPENCODE_DIR/templates/design_system.md" "~/.config/opencode/templates/design_system.md"
 
-if [[ "$command_count" -eq 0 ]]; then
+if [[ "$MODE" == "verify" ]]; then
+  echo ""
+  echo "Verification complete."
+elif [[ "$command_count" -eq 0 ]]; then
   echo ""
   echo "No commands found in $SCRIPT_DIR/commands/."
 else
@@ -56,4 +91,4 @@ else
 fi
 
 echo ""
-echo "To verify: ls ~/.config/opencode/commands/"
+echo "To verify manually: ls ~/.config/opencode/commands/"

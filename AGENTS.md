@@ -35,6 +35,7 @@ Use these unless project instructions say otherwise:
 ## Collaboration
 
 - If the user's direction is materially ambiguous, stop and ask a short clarifying question instead of guessing and proceeding.
+- If a requested change would benefit from verification beyond unit tests, say what you verified and what remains unverified.
 
 ## Component Rules
 
@@ -61,10 +62,18 @@ Read `design_system.md` before writing frontend code.
 
 Before every commit:
 1. Run the relevant tests
-2. Update `docs/ARCHITECTURE.md` when architecture, data model, or major patterns changed
-3. Update `docs/CHANGELOG.md` when a planned change is completed
-4. Update `docs/TASKS.md` and any related plan docs
-5. Present a concise summary and verification notes before committing when the user expects review
+2. Run the relevant lint, typecheck, and build steps when the change could affect them
+3. Update `docs/ARCHITECTURE.md` when architecture, data model, or major patterns changed
+4. Update `docs/CHANGELOG.md` when a planned change is completed
+5. Update `docs/TASKS.md` and any related plan docs
+6. Present a concise summary and verification notes before committing when the user expects review
+
+## Verification
+
+- Prefer the smallest meaningful verification that proves the change works, but do not stop at static reasoning when the repo provides runnable checks.
+- For UI changes, verify the user-visible behavior with the relevant test, build, or manual flow and call out anything not exercised.
+- For schema, migration, or integration changes, verify both the code path and the operational path, not just isolated unit tests.
+- If verification cannot be completed, say exactly what blocked it instead of implying confidence.
 
 ## Documentation
 
@@ -111,3 +120,4 @@ Create a plan before implementation when a change:
 - Ask before adding new dependencies when an existing package may already solve the problem
 - Add comments at integration boundaries and for non-obvious choices
 - Keep `docs/ARCHITECTURE.md` aligned with actual patterns in the codebase
+- Prefer config and workflow changes that are easy to audit, re-run, and verify over one-off local tweaks
