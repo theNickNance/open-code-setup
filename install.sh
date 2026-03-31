@@ -1,5 +1,5 @@
 #!/bin/bash
-# install.sh — Copy AGENTS.md and commands to ~/.config/opencode/
+# install.sh — Copy global OpenCode config, AGENTS.md, and commands
 # Run from the repo root: ./install.sh
 
 set -e
@@ -27,6 +27,9 @@ safe_copy() {
 
 # Create ~/.config/opencode/ if it doesn't exist
 mkdir -p "$OPENCODE_DIR/commands" "$OPENCODE_DIR/templates"
+
+# Copy global opencode.json
+safe_copy "$SCRIPT_DIR/opencode.json" "$OPENCODE_DIR/opencode.json" "~/.config/opencode/opencode.json"
 
 # Copy global AGENTS.md
 safe_copy "$SCRIPT_DIR/AGENTS.md" "$OPENCODE_DIR/AGENTS.md" "~/.config/opencode/AGENTS.md"

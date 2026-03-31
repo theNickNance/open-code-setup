@@ -5,6 +5,7 @@ A portable OpenCode configuration repo built around committed project docs, reus
 ## What It Includes
 
 ```text
+opencode.json
 AGENTS.md
 install.sh
 commands/
@@ -18,6 +19,7 @@ templates/
   design_system.md
 ```
 
+- `opencode.json`: global OpenCode config installed to `~/.config/opencode/opencode.json`
 - `AGENTS.md`: global OpenCode rules installed to `~/.config/opencode/AGENTS.md`
 - `commands/*.md`: OpenCode slash commands installed to `~/.config/opencode/commands/`
 - `templates/design_system.md`: reusable design-system template installed to `~/.config/opencode/templates/design_system.md`
@@ -35,6 +37,7 @@ Manual install:
 
 ```bash
 mkdir -p ~/.config/opencode/commands ~/.config/opencode/templates
+cp ~/open-code-setup/opencode.json ~/.config/opencode/opencode.json
 cp ~/open-code-setup/AGENTS.md ~/.config/opencode/AGENTS.md
 cp ~/open-code-setup/commands/*.md ~/.config/opencode/commands/
 cp ~/open-code-setup/templates/design_system.md ~/.config/opencode/templates/design_system.md
@@ -84,6 +87,7 @@ OpenCode supports some Claude Code conventions as fallback behavior, but this re
 
 - `~/.claude/CLAUDE.md` -> `~/.config/opencode/AGENTS.md`
 - `~/.claude/skills/*` -> `~/.config/opencode/commands/*.md`
+- `~/.claude/settings.json` dangerous-mode prompt skip -> `~/.config/opencode/opencode.json` with `"permission": "allow"`
 - Project `CLAUDE.md` -> project `AGENTS.md`
 
 Relevant docs:
