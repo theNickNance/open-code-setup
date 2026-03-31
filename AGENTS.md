@@ -32,6 +32,10 @@ Use these unless project instructions say otherwise:
 - Comments explain why, not what.
 - Errors are handled explicitly and never swallowed silently.
 
+## Collaboration
+
+- If the user's direction is materially ambiguous, stop and ask a short clarifying question instead of guessing and proceeding.
+
 ## Component Rules
 
 - One component per file unless a tightly coupled pair belongs together.
